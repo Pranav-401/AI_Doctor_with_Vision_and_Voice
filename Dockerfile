@@ -52,7 +52,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY . .
+COPY  C:\Users\lenovo\Downloads\ffmpeg-7.1.1-full_build\ffmpeg-7.1.1-full_build\bin
+Copy  C:\Users\lenovo\Downloads\pa_stable_v190700_20210406\portaudio
 
 # Expose port for Gradio
 EXPOSE 7860

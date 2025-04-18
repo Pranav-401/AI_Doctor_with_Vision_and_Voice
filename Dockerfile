@@ -1,26 +1,31 @@
 FROM python:3.11-slim
 
-   # Install system dependencies
-   RUN apt-get update && apt-get install -y \
-       libportaudio2 \
-       libportaudio-dev \
-       portaudio19-dev \
-       ffmpeg \
-       gcc \
-       && apt-get clean
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libportaudio2 \
+        libportaudio-dev \
+        portaudio19-dev \
+        ffmpeg \
+        gcc \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-   # Set working directory
-   WORKDIR /app
+# Upgrade pip
+RUN pip install --upgrade pip
 
-   # Copy requirements.txt and install Python dependencies
-   COPY requirements.txt .
-   RUN pip install --no-cache-dir -r requirements.txt
+# Set working directory
+WORKDIR /app
 
-   # Copy application files
-   COPY . .
+# Copy requirements.txt and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-   # Expose port for Gradio
-   EXPOSE 7860
+# Copy application files
+COPY . .
 
-   # Run the application
-   CMD ["python", "app.py"]
+# Expose port for Gradio
+EXPOSE 7860
+
+# Run the application
+CMD ["python", "gradio_app.py"]

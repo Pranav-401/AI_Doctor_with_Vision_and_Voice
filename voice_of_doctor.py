@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from elevenlabs import ElevenLabs
 import subprocess
 import platform
+from pydub import AudioSegment
+import tempfile
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -32,6 +34,12 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath="final.mp3"):
             for chunk in audio:
                 f.write(chunk)
 
+        # Convert MP3 to WAV for playback
+        wav_filepath = os.path.join(tempfile.gettempdir(), "temp_audio.wav")
+        logging.info(f"Converting {output_filepath} to WAV: {wav_filepath}")
+        audio_segment = AudioSegment.from_mp3(output_filepath)
+        audio_segment.export(wav_filepath, format="wav")
+
         # Play audio based on operating system
         os_name = platform.system()
         logging.info(f"Playing audio on {os_name}")
@@ -39,13 +47,16 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath="final.mp3"):
             if os_name == "Darwin":  # macOS
                 subprocess.run(['afplay', output_filepath], check=True)
             elif os_name == "Windows":  # Windows
-                subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{output_filepath}").PlaySync();'], check=True)
+                subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{wav_filepath}").PlaySync();'], check=True)
             elif os_name == "Linux":  # Linux
-                subprocess.run(['aplay', output_filepath], check=True)
+                subprocess.run(['aplay', wav_filepath], check=True)
             else:
                 raise OSError("Unsupported operating system")
         except Exception as e:
             logging.error(f"Error playing audio: {e}")
+        finally:
+            if os.path.exists(wav_filepath):
+                os.remove(wav_filepath)
 
         return output_filepath
 

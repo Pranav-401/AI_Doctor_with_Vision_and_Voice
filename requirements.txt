@@ -5,3 +5,4 @@ pydub==0.25.1
 elevenlabs==1.9.0
 groq==0.11.0
 speechrecognition==3.10.4
+apt-get update && apt-get install -y libportaudio2 libportaudio-dev portaudio19-dev ffmpeg

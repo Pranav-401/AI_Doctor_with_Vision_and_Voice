@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: medi-bot
+    env: python
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    preBuildCommand: apt-get update && apt-get install -y libportaudio2 libportaudio-dev portaudio19-dev ffmpeg
+    startCommand: python gradio_app.py
+    envVars:
+      - key: GROQ_API_KEY
+        value: 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
+      - key: ELEVENLABS_API_KEY
+        value: sk_12caaf4e484913588e66aa81b25bd6b37c09321af86bf10f
+      - key: PYTHONUNBUFFERED
+        value: 1
